@@ -3,8 +3,5 @@
   "version": "1.0.0",
   "main": "./index.js",
   "module": "./index.mjs",
-  "typings": "./index.d.ts",
-  "devDependencies": {
-    "uint8array-extras": "^1.4.0"
-  }
+  "typings": "./index.d.ts"
 }

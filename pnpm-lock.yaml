@@ -79,11 +79,7 @@ importers:
         specifier: ^1.3.1
         version: 1.3.1(@types/node@18.16.9)(@vitest/ui@1.3.1)
 
-  packages/iff:
-    devDependencies:
-      uint8array-extras:
-        specifier: ^1.4.0
-        version: 1.4.0
+  packages/iff: {}
 
 packages:
 
@@ -6989,11 +6985,6 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
-
-  /uint8array-extras@1.4.0:
-    resolution: {integrity: sha512-ZPtzy0hu4cZjv3z5NW9gfKnNLjoz4y6uv4HlelAjDK7sY/xOkKZv9xK/WQpcsBB3jEybChz9DPC2U/+cusjJVQ==}
-    engines: {node: '>=18'}
-    dev: true
 
   /unicode-canonical-property-names-ecmascript@2.0.0:
     resolution: {integrity: sha512-yY5PpDlfVIU5+y/BSCxAJRBIS1Zc2dDG3Ujq+sR0U+JjUevW2JhocOF+soROYDSaAezOzOKuyyixhD6mBknSmQ==}
