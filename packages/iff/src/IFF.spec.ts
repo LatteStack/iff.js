@@ -17,18 +17,17 @@ function areUint8ArraysEqual(a: Uint8Array, b: Uint8Array): boolean {
 describe('IFF', () => {
   function createMockChunk(length: number, identifier?: string): Chunk
   function createMockChunk(content: ArrayBuffer, identifier?: string): Chunk
-  function createMockChunk(lengthOrContent: number | ArrayBuffer, identifier = ''): Chunk {
+  function createMockChunk(lengthOrContent: number | ArrayBuffer, identifier = 'WARE'): Chunk {
     const content = typeof lengthOrContent === 'number'
       ? new Uint8Array(randomBytes(lengthOrContent))
       : lengthOrContent
+
     return new Chunk([content], { identifier });
   }
 
   test('blob', async () => {
     expect(new IFF(createMockChunk(0)).blob()).toBeInstanceOf(Blob)
     expect(new IFF(createMockChunk(0)).blob().size).toBe(12)
-    expect(new IFF(createMockChunk(0, 'S')).blob().size).toBe(12)
-    expect(new IFF(createMockChunk(0, 'LONG_IDENTIFIER')).blob().size).toBe(12)
     expect(new IFF(createMockChunk(10)).blob().size).toBe(22)
     expect(new IFF(createMockChunk(10), createMockChunk(10)).blob().size).toBe(44)
   })

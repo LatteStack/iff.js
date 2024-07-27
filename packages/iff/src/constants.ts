@@ -1,0 +1,3 @@
+export const TYPE_LENGTH = 4
+export const SIZE_LENGTH = BigUint64Array.BYTES_PER_ELEMENT
+export const HEADER_LENGTH = TYPE_LENGTH + SIZE_LENGTH

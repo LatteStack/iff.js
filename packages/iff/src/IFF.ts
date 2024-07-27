@@ -1,8 +1,5 @@
 import { Chunk } from "./Chunk";
-
-const TYPE_LENGTH = 4
-const SIZE_LENGTH = BigUint64Array.BYTES_PER_ELEMENT
-const HEADER_LENGTH = TYPE_LENGTH + SIZE_LENGTH
+import { TYPE_LENGTH, SIZE_LENGTH, HEADER_LENGTH } from "./constants";
 
 export class IFF extends Array<Chunk> {
   constructor(...chunks: Chunk[]) {
@@ -11,14 +8,7 @@ export class IFF extends Array<Chunk> {
 
   blob(): Blob {
     const createIdentifier = (identifier: string): Uint8Array => {
-      const buffer = new Uint8Array(TYPE_LENGTH)
-      const identifierBuffer = new TextEncoder().encode(identifier)
-      buffer.set(
-        identifierBuffer.length <= TYPE_LENGTH
-          ? identifierBuffer
-          : identifierBuffer.subarray(0, TYPE_LENGTH)
-      )
-      return buffer
+      return new TextEncoder().encode(identifier)
     }
 
     const createSize = (size: number): Uint8Array => {
@@ -54,7 +44,7 @@ export class IFF extends Array<Chunk> {
 
     let offset = 0
 
-    const readChunk = (size: number, identifier = ''): Chunk => {
+    const readChunk = (size: number, identifier: string): Chunk => {
       const chunk = new Chunk([blob.slice(offset, offset + size)], { identifier })
       offset += size
       return chunk
@@ -73,7 +63,7 @@ export class IFF extends Array<Chunk> {
     }
 
     while (offset < blob.size) {
-      const header = await readChunk(HEADER_LENGTH).arrayBuffer()
+      const header = await readChunk(HEADER_LENGTH, 'HEAD').arrayBuffer()
       const size = getSize(header)
       const identifier = getIdentifier(header)
       const chunk = readChunk(size, identifier)
