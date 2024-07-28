@@ -1,4 +1,4 @@
-import { TYPE_LENGTH } from "./constants";
+import { HEADER_LENGTH, SIZE_LENGTH, TYPE_LENGTH } from "./constants";
 
 const MAX_ASCII = 127
 
@@ -18,18 +18,34 @@ function validateIdentifier(identifier: unknown): asserts identifier is string {
   }
 }
 
+function createIdentifierBuffer(identifier: string): Uint8Array {
+  return new TextEncoder().encode(identifier)
+}
+
+function createSizeBuffer(size: number): Uint8Array {
+  const buffer = new ArrayBuffer(SIZE_LENGTH)
+  new DataView(buffer).setBigUint64(0, BigInt(size))
+  return new Uint8Array(buffer)
+}
+
 export class Chunk extends Blob {
   readonly identifier: string
+
+  get header(): Uint8Array {
+    const buffer = new Uint8Array(HEADER_LENGTH)
+    buffer.set(createIdentifierBuffer(this.identifier))
+    buffer.set(createSizeBuffer(this.size), TYPE_LENGTH)
+    return buffer
+  }
 
   constructor(
     blobParts: BlobPart[],
     options: BlobPropertyBag & { identifier: string }
   ) {
     const { identifier, ...rest} = options
+    validateIdentifier(identifier)
 
     super(blobParts, rest)
-
-    validateIdentifier(identifier)
     this.identifier = identifier
   }
 }

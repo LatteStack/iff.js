@@ -1,18 +1,8 @@
-import { IFF } from "./IFF";
-import { Chunk } from "./Chunk";
+import { IFF } from "../IFF";
+import { Chunk } from "../Chunk";
 import { randomBytes, randomInt, randomUUID } from "node:crypto";
+import { areUint8ArraysEqual } from "uint8array-extras";
 
-function areUint8ArraysEqual(a: Uint8Array, b: Uint8Array): boolean {
-  if (a.length !== b.length) return false
-
-  for (let index = 0; index < a.length; index++) {
-    if (a[index] !== b[index]) {
-      return false
-    }
-  }
-
-  return true
-}
 
 describe('IFF', () => {
   function createMockChunk(length: number, identifier?: string): Chunk
