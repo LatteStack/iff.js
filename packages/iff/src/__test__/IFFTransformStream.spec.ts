@@ -16,6 +16,13 @@ describe('IFFTransformStream', () => {
     const data = await new IFF(...chunks).arrayBuffer()
 
     await new Blob([data]).stream()
+      .pipeThrough(new TransformStream({
+        transform(chunk, controller) {
+          controller.enqueue(
+            ArrayBuffer.isView(chunk) ? chunk.buffer : chunk
+          )
+        }
+      }))
       .pipeThrough(new IFFTransformStream({
         transform: async (actual) => {
           const excepted = chunks[index++]
@@ -30,5 +37,18 @@ describe('IFFTransformStream', () => {
       .pipeTo(new WritableStream({
         write: () => void 0
       }))
+  })
+
+  it('should throw while chunk is not ArrayBuffer | ArrayBufferView', async () => {
+    expect(
+      new ReadableStream({
+        start(controller) {
+          controller.enqueue({})
+          controller.close()
+        },
+      })
+        .pipeThrough(new IFFTransformStream())
+        .pipeTo(new WritableStream({ write: () => void 0 }))
+    ).rejects.toThrow()
   })
 })

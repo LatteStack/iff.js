@@ -2,15 +2,28 @@ import { Chunk } from "./Chunk"
 import { HEADER_LENGTH, TYPE_LENGTH } from "./constants"
 import { concatUint8Arrays } from "uint8array-extras";
 
-export class IFFTransformStream<T = any> extends TransformStream<Uint8Array, T> {
+function assertsArrayBufferLike(value: unknown): asserts value is ArrayBufferLike {
+  if (value != null && (value instanceof ArrayBuffer || ArrayBuffer.isView(value))) {
+    return
+  }
+
+  throw new TypeError(
+    'Expectd ArrayBuffer | ArrayBufferView, but got:' +
+    Object.prototype.toString.call(value)
+  )
+}
+
+export class IFFTransformStream<T = any> extends TransformStream<ArrayBuffer, T> {
   #buffer = new Uint8Array()
 
   constructor(transformer?: Transformer<Chunk, T>) {
     super({
       ...transformer,
       transform: async (_chunk, controller) => {
+        assertsArrayBufferLike(_chunk)
+
         // Append new chunk to the buffer
-        this.#buffer = concatUint8Arrays([this.#buffer, _chunk])
+        this.#buffer = concatUint8Arrays([this.#buffer, new Uint8Array(_chunk)])
 
         while (this.#buffer.length >= HEADER_LENGTH) {
           const size = Number(new DataView(this.#buffer.buffer).getBigUint64(TYPE_LENGTH))
