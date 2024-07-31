@@ -28,14 +28,18 @@ function createSizeBuffer(size: number): Uint8Array {
   return new Uint8Array(buffer)
 }
 
+function createHeader(identifier: string, size: number): Uint8Array {
+  const buffer = new Uint8Array(HEADER_LENGTH)
+  buffer.set(createIdentifierBuffer(identifier))
+  buffer.set(createSizeBuffer(size), TYPE_LENGTH)
+  return buffer
+}
+
 export class Chunk extends Blob {
   readonly identifier: string
 
   get header(): Uint8Array {
-    const buffer = new Uint8Array(HEADER_LENGTH)
-    buffer.set(createIdentifierBuffer(this.identifier))
-    buffer.set(createSizeBuffer(this.size), TYPE_LENGTH)
-    return buffer
+    return createHeader(this.identifier, this.size)
   }
 
   constructor(
@@ -47,5 +51,16 @@ export class Chunk extends Blob {
 
     super(blobParts, rest)
     this.identifier = identifier
+  }
+}
+
+export class RawChunk extends Blob {
+  constructor(identifier: string, blobParts?: BlobPart[]) {
+    validateIdentifier(identifier)
+
+    const data = new Blob(blobParts)
+    const header = createHeader(identifier, data.size)
+
+    super([header, data])
   }
 }
