@@ -1,4 +1,4 @@
 export { IFF } from './IFF'
-export { Chunk } from './Chunk'
+export { Chunk, RawChunk } from './Chunk'
 export { IFFTransformStream } from './IFFTransformStream'
 export * from './constants'
