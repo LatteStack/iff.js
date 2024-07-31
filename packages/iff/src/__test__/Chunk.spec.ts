@@ -1,43 +1,24 @@
-import { areUint8ArraysEqual, concatUint8Arrays } from "uint8array-extras";
+import { areUint8ArraysEqual } from "uint8array-extras";
 import { Chunk, RawChunk } from "../Chunk";
 
 describe('Chunk', () => {
   it('should validate identifier', async () => {
-    expect(() => new Chunk([], { identifier: undefined as unknown as string })).toThrow()
-    expect(() => new Chunk([], { identifier: '' })).toThrow()
-    expect(() => new Chunk([], { identifier: 'abc' })).toThrow()
-    expect(() => new Chunk([], { identifier: 'abcd' })).not.toThrow()
-    expect(() => new Chunk([], { identifier: 'abcde' })).toThrow()
-    expect(() => new Chunk([], { identifier: '££££' })).toThrow()
-    expect(() => new Chunk([], { identifier: '中文中文' })).toThrow()
+    expect(() => new Chunk(undefined as unknown as string)).toThrow()
+    expect(() => new Chunk('')).toThrow()
+    expect(() => new Chunk('abc')).toThrow()
+    expect(() => new Chunk('abcd')).not.toThrow()
+    expect(() => new Chunk('abcde')).toThrow()
+    expect(() => new Chunk('££££')).toThrow()
+    expect(() => new Chunk('中文中文')).toThrow()
   })
 
   it('should be instance of Blob', () => {
-    expect(new Chunk([], { identifier: 'WAVE' })).toBeInstanceOf(Blob)
+    expect(new Chunk('WAVE')).toBeInstanceOf(Blob)
   })
 
   test('identifier', async () => {
     const identifier = 'WAVE'
-    expect(new Chunk([], { identifier }).identifier).toBe(identifier)
-  })
-
-  test('header', async () => {
-    const identifier = 'WARE'
-    const data = new Uint8Array(10)
-    const sizeBuffer = new ArrayBuffer(8)
-    const chunk = new Chunk([data], { identifier })
-
-    new DataView(sizeBuffer).setBigUint64(0, BigInt(data.length))
-
-    expect(
-      areUint8ArraysEqual(
-        new Uint8Array(chunk.header),
-        concatUint8Arrays([
-          new TextEncoder().encode(identifier),
-          new Uint8Array(sizeBuffer),
-        ])
-      )
-    ).toBeTruthy()
+    expect(new Chunk(identifier).identifier).toBe(identifier)
   })
 })
 

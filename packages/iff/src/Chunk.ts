@@ -36,21 +36,13 @@ function createHeader(identifier: string, size: number): Uint8Array {
 }
 
 export class Chunk extends Blob {
-  readonly identifier: string
-
-  get header(): Uint8Array {
-    return createHeader(this.identifier, this.size)
-  }
-
   constructor(
-    blobParts: BlobPart[],
-    options: BlobPropertyBag & { identifier: string }
+    public readonly identifier: string,
+    blobParts?: BlobPart[],
+    options?: BlobPropertyBag
   ) {
-    const { identifier, ...rest} = options
     validateIdentifier(identifier)
-
-    super(blobParts, rest)
-    this.identifier = identifier
+    super(blobParts, options)
   }
 }
 

@@ -25,7 +25,7 @@ export class IFFTransformStream<T = any> extends TransformStream<Uint8Array, T> 
           const headerBuffer = chunkData.subarray(0, HEADER_LENGTH)
           const identifier = new TextDecoder().decode(headerBuffer.subarray(0, TYPE_LENGTH))
 
-          const chunk = new Chunk([chunkData.subarray(HEADER_LENGTH)], { identifier })
+          const chunk = new Chunk(identifier, [chunkData.subarray(HEADER_LENGTH)])
 
           await transformer?.transform?.(chunk, controller)
 

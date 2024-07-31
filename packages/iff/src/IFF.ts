@@ -45,7 +45,7 @@ export class IFF extends Array<Chunk> {
     let offset = 0
 
     const readChunk = (size: number, identifier: string): Chunk => {
-      const chunk = new Chunk([blob.slice(offset, offset + size)], { identifier })
+      const chunk = new Chunk(identifier, [blob.slice(offset, offset + size)])
       offset += size
       return chunk
     }

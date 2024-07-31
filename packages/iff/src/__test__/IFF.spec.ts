@@ -12,7 +12,7 @@ describe('IFF', () => {
       ? new Uint8Array(randomBytes(lengthOrContent))
       : lengthOrContent
 
-    return new Chunk([content], { identifier });
+    return new Chunk(identifier, [content]);
   }
 
   test('blob', async () => {

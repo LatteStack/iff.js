@@ -7,9 +7,7 @@ import { IFF } from "../IFF";
 describe('IFFTransformStream', () => {
   it('should correctly transform a stream with multiple chunks', async () => {
     const chunks = Array.from({ length: 1000 }, () => {
-      return new Chunk([new Uint8Array(randomBytes(randomInt(0, 1000)))], {
-        identifier: randomUUID().slice(-4)
-      })
+      return new Chunk(randomUUID().slice(-4), [new Uint8Array(randomBytes(randomInt(0, 1000)))])
     })
 
     let index = 0
